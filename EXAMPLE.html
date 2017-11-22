@@ -1,0 +1,99 @@
+<html>
+<head>
+  <title>Calling WebAssembly-compiled C-Function in Browser</title>
+</head>
+<body>
+  <button class="mybutton">void my_function ()</button>
+  <button class="mybutton2">float my_function2 (float* array, int length)</button>
+
+
+  <script type='text/javascript'>
+    'use strict';
+
+
+    var size, myTypedArray, heapBuffer;
+    var Module =
+    {
+      preRun: [],
+      onRuntimeInitialized: null,
+      postRun: [],
+      print: (text) => console.log(text),
+      printErr: (text) => console.warn(text)
+    };
+
+
+    function my_function ()
+    {
+      Module.ccall (
+        'my_function',  // name of C function
+         null,          // return type
+         null,          // argument types
+         null           // arguments
+      );
+    }
+
+
+    function my_function2 ()
+    {
+      // Allocate on first run only for speed.
+      if (!heapBuffer)
+      {
+        // Get a TypedArray() in javscript.
+        size = 640*480*30*2;
+        myTypedArray = new Float32Array(size);
+
+        // Initialize array.
+        for (let i=0; i<size; i++)
+          myTypedArray[i] = i;
+
+        // Allocate memory on the heap.
+        var bytes_needed = myTypedArray.BYTES_PER_ELEMENT * myTypedArray.length;
+        heapBuffer = Module._malloc (bytes_needed);
+      }
+
+      // Copy the TypedArray to heap-allocated memory.
+      /*
+        Note: Pointers are implemented as indices to bytes in the heap.
+        The set() function indexes this same heap but views the heap as
+        an array of the prefixed data (in this case Float32).
+        Hence we adjust the heapBuffer "pointer" to compensate for this
+        different "view" of the heap by dividing by
+        myTypedArray.BYTES_PER_ELEMENT.
+
+        See another explanation at:
+          https://github.com/kripken/emscripten/issues/4003
+      */
+      var adjusted_pointer = heapBuffer/myTypedArray.BYTES_PER_ELEMENT;
+      Module.HEAPF32.set(myTypedArray, adjusted_pointer);
+
+      // Pass a pointer to heap-allocated memory to the function.
+      var result = Module.ccall(
+        'my_function2',
+        'number',
+        ['number', 'number'],
+        [heapBuffer, size]
+      );
+
+      // Free memory from the heap.
+      // Module._free(heapBuffer); // Don't free for speed if calling repeatedly
+
+      console.log('Javascript result:', result);
+
+      return result;
+    }
+
+
+    function buttons_init ()
+    {
+      document.querySelector ('.mybutton').addEventListener ('click', () => my_function ());
+      document.querySelector ('.mybutton2').addEventListener ('click', () => my_function2 ());
+    }
+
+
+    buttons_init ();
+  </script>
+
+
+  <script async type="text/javascript" src="EXAMPLE.js"></script>
+</body>
+</html>
