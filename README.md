@@ -90,38 +90,26 @@ var Module =
 
 ```javascript
 // Get a TypedArray() in javscript.
-var size = 640*480*30;
-var myTypedArray = new Float32Array(size);
+var length = 640*480*30*2;
+var bytes_per_element = 4;
 
 // Allocate memory on the heap.
-var bytes_needed = myTypedArray.BYTES_PER_ELEMENT * myTypedArray.length;
+var bytes_needed = bytes_per_element * length;
 var heapBuffer = Module._malloc (bytes_needed);
 
+// Create TypedArray() with underlying buffer from emscripten heap.
+var myTypedArray = new Float32Array (Module.HEAPF32.buffer, heapBuffer, length);
+
 // Initialize array.
-for (let i=0; i<size; i++)
+for (let i=0; i<length; i++)
   myTypedArray[i] = i;
-
-// Copy the TypedArray to heap-allocated memory.
-/*
-  Note: Pointers are implemented as indices to bytes in the heap.
-  The set() function indexes this same heap but views the heap as
-  an array of the prefixed data (in this case Float32).
-  Hence we adjust the heapBuffer "pointer" to compensate for this
-  different "view" of the heap by dividing by
-  myTypedArray.BYTES_PER_ELEMENT.
-
-  See another explanation at:
-    https://github.com/kripken/emscripten/issues/4003
-*/
-var adjusted_pointer = heapBuffer/myTypedArray.BYTES_PER_ELEMENT;
-Module.HEAPF32.set(myTypedArray, adjusted_pointer);
 
 // Pass a pointer to heap-allocated memory to the function.
 var result = Module.ccall(
   'my_function2',
   'number',
   ['number', 'number'],
-  [heapBuffer, size]
+  [heapBuffer, length]
 );
 
 // Free memory from the heap.
