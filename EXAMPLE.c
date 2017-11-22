@@ -20,7 +20,8 @@
 
   Replace 81920000 (78.1M) with the number of bytes the application plans to
   allocate on the heap (e.g. with malloc()).
-  Can also omit the option or replace with the following flag to allow growth:
+  Can also omit the option or replace with the following flag to allow heap
+  growth:
 
     -s ALLOW_MEMORY_GROWTH=1
 

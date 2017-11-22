@@ -20,13 +20,14 @@ To run from command line and only see output to standard error (tested in bash):
 
 ### Compile C Code to WebAssembly
 
-  `emcc -o EXAMPLE.js EXAMPLE.c -O3 -s WASM=1 -s NO_EXIT_RUNTIME=1 -s TOTAL_MEMORY=<BYTES>`
+    emcc -o EXAMPLE.js EXAMPLE.c -O3 -s WASM=1 -s NO_EXIT_RUNTIME=1 -s TOTAL_MEMORY=[BYTES]
 
-Replace <BYTES> with the number of bytes the application plans to
+Replace `[BYTES]` with the number of bytes the application plans to
 allocate on the heap (e.g. with `malloc()`).
-Can also omit the option or replace with the following flag to allow growth:
+For this template application `[BYTES]` should be `81920000` (78.1MB).
+Can also omit the `-s TOTAL_MEMORY` option or replace with the following flag to allow heap growth:
 
-  `-s ALLOW_MEMORY_GROWTH=1`
+    -s ALLOW_MEMORY_GROWTH=1
 
 The number of bytes must be a multiple of 64K (page size).
 (Otherwise, the compiler will give an error stating this same requirement.)
@@ -59,11 +60,11 @@ var Module =
 3. Start a local HTTP server in the same directory, for instance, with the
    following command:
 
-    `python3 -m http.server 8000`
+        python3 -m http.server 8000
 
 4. Open `EXAMPLE.html` in the browser with the URL:
 
-    `http://localhost:8000/EXAMPLE.html`
+        http://localhost:8000/EXAMPLE.html
 
 (The capitalization matters on Linux.)
 
