@@ -1,5 +1,7 @@
 # Tutorial for Compiling C Code to Run on the Web (with Emscripten and WebAssembly)
 
+Simpler and less general than the shell_minimal.html included in `emsdk/emscripten/[version e.g. 1.37.22]/src`.
+
 ### Compile C Code to Native Executable
 
 Compile with the following command:
