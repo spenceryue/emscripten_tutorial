@@ -39,7 +39,8 @@
       if (!heapBuffer)
       {
         // Get a TypedArray() in javscript.
-        length = 640*480*30*2;
+        // In this example: (# pixels in a frame * # channels in a pixel) * (# frames)
+        length = (640 * 480 * 4) * (20);
         bytes_per_element = 4;
 
         // Allocate memory on the heap.

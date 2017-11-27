@@ -16,10 +16,10 @@
   COMPILE TO WEBASSEMBLY WITH:
 
     emcc -o EXAMPLE.js EXAMPLE.c -O3 -s WASM=1 -s NO_EXIT_RUNTIME=1 \
-    -s TOTAL_MEMORY=81920000
+    -s TOTAL_MEMORY=94MB
 
-  Replace 81920000 (78.1M) with the number of bytes the application plans to
-  allocate on the heap (e.g. with malloc()).
+  Replace 94MB with the number of bytes the application plans to
+  allocate on the heap (e.g. with malloc()) plus the size of the code.
   Can also omit the option or replace with the following flag to allow heap
   growth:
 

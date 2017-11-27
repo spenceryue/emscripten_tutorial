@@ -23,8 +23,8 @@ To run from command line and only see output to standard error (tested in bash):
     emcc -o EXAMPLE.js EXAMPLE.c -O3 -s WASM=1 -s NO_EXIT_RUNTIME=1 -s TOTAL_MEMORY=[BYTES]
 
 Replace `[BYTES]` with the number of bytes the application plans to
-allocate on the heap (e.g. with `malloc()`).
-For this template application `[BYTES]` should be `81920000` (78.1MB).
+allocate on the heap (e.g. with `malloc()`) plus the size of the code.
+For this template application `[BYTES]` should be `94MB`.
 Can also omit the `-s TOTAL_MEMORY` option or replace with the following flag to allow heap growth:
 
     -s ALLOW_MEMORY_GROWTH=1
